@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.3">
+  <bpmn:collaboration id="collaboration_pizza">
+    <bpmn:participant id="participant_external" name="external" processRef="pizza_external" />
+    <bpmn:participant id="participant_manager" name="manager" processRef="pizza_manager" />
+    <bpmn:participant id="participant_engineer" name="engineer" processRef="pizza_engineer" />
+    <bpmn:messageFlow id="MessageFlow_006slr0" sourceRef="IntermediateThrowEvent_start_approve" targetRef="StartEvent_0tbclmn" />
+    <bpmn:messageFlow id="MessageFlow_1kacpzl" sourceRef="IntermediateThrowEvent_1gvaqz2" targetRef="IntermediateThrowEvent_1j2m51s" />
+  </bpmn:collaboration>
+  <bpmn:process id="pizza_external" name="pizza_external" isExecutable="true" camunda:versionTag="1.0">
+    <bpmn:startEvent id="StartEvent_1" camunda:formKey="app:user/pizza/placeOrder.xhtml" camunda:initiator="#{userUtil.getPreferredUserName()}">
+      <bpmn:outgoing>SequenceFlow_1pbv1ay</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="persist_order_task" name="Persist Order" camunda:expression="${orderController.saveOrder(execution)}">
+      <bpmn:incoming>SequenceFlow_1pbv1ay</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_19ubrj7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1pbv1ay" sourceRef="StartEvent_1" targetRef="persist_order_task" />
+    <bpmn:sequenceFlow id="SequenceFlow_19ubrj7" sourceRef="persist_order_task" targetRef="IntermediateThrowEvent_start_approve" />
+    <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_start_approve">
+      <bpmn:incoming>SequenceFlow_19ubrj7</bpmn:incoming>
+      <bpmn:messageEventDefinition messageRef="Message_0g7vom3" camunda:expression="#{genericStartProcessByMessageEvent.execute(execution)}">
+        <bpmn:extensionElements>
+          <camunda:field name="messageName">
+            <camunda:string>message_start_approve_order</camunda:string>
+          </camunda:field>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
+    </bpmn:intermediateThrowEvent>
+  </bpmn:process>
+  <bpmn:process id="pizza_manager" name="pizza_manager" isExecutable="true">
+    <bpmn:userTask id="approve_order_task" name="Approve Order" camunda:formKey="app:manager/pizza/approveOrder.xhtml" camunda:candidateGroups="manager">
+      <bpmn:incoming>SequenceFlow_0ejcx69</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0kj7k0a</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="approved_order_gateway" name="Order Approved?">
+      <bpmn:incoming>SequenceFlow_0kj7k0a</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0zvh96q</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_122ntav</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:startEvent id="StartEvent_0tbclmn" camunda:initiator="#{userUtil.getPreferredUserName()}">
+      <bpmn:outgoing>SequenceFlow_0ejcx69</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_0g7vom3" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="order_rejected_end" name="Order Rejected">
+      <bpmn:incoming>SequenceFlow_0uf5a3d</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="rejection_task" name="Send Rejection Email" camunda:expression="${rejectionEmailController.sendRejectionEmail()}">
+      <bpmn:incoming>SequenceFlow_0zvh96q</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0uf5a3d</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_1gvaqz2">
+      <bpmn:incoming>SequenceFlow_122ntav</bpmn:incoming>
+      <bpmn:messageEventDefinition messageRef="Message_07vnp7o" camunda:expression="#{genericStartProcessByMessageEvent.execute(execution)}">
+        <bpmn:extensionElements>
+          <camunda:field name="messageName">
+            <camunda:string>message_start_prepare</camunda:string>
+          </camunda:field>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0ejcx69" sourceRef="StartEvent_0tbclmn" targetRef="approve_order_task" />
+    <bpmn:sequenceFlow id="SequenceFlow_0kj7k0a" sourceRef="approve_order_task" targetRef="approved_order_gateway" />
+    <bpmn:sequenceFlow id="SequenceFlow_0zvh96q" name="N" sourceRef="approved_order_gateway" targetRef="rejection_task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not orderApprovedDecisionController.isApproved()}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_122ntav" name="Y" sourceRef="approved_order_gateway" targetRef="IntermediateThrowEvent_1gvaqz2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${orderApprovedDecisionController.isApproved()}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0uf5a3d" sourceRef="rejection_task" targetRef="order_rejected_end" />
+  </bpmn:process>
+  <bpmn:message id="Message_0g7vom3" name="message_start_approve_order" />
+  <bpmn:process id="pizza_engineer" name="pizza_engineer" isExecutable="true">
+    <bpmn:startEvent id="IntermediateThrowEvent_1j2m51s" camunda:initiator="#{userUtil.getPreferredUserName()}">
+      <bpmn:outgoing>SequenceFlow_0g9waah</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_07vnp7o" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="prepare_pizza_task" name="Prepare Pizza" camunda:formKey="app:manager/pizza/preparePizza.xhtml" camunda:candidateGroups="engineer">
+      <bpmn:incoming>SequenceFlow_0g9waah</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_15ybvn7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="pizza_prepared_end" name="Pizza Prepared">
+      <bpmn:incoming>SequenceFlow_15ybvn7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0g9waah" sourceRef="IntermediateThrowEvent_1j2m51s" targetRef="prepare_pizza_task" />
+    <bpmn:sequenceFlow id="SequenceFlow_15ybvn7" sourceRef="prepare_pizza_task" targetRef="pizza_prepared_end" />
+  </bpmn:process>
+  <bpmn:message id="Message_07vnp7o" name="message_start_prepare" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collaboration_pizza">
+      <bpmndi:BPMNShape id="Participant_0ygiuty_di" bpmnElement="participant_external">
+        <dc:Bounds x="124" y="60" width="1017" height="285" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="174" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="147" y="138" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_19mhfh7_di" bpmnElement="persist_order_task">
+        <dc:Bounds x="312" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0lurz3g_di" bpmnElement="approve_order_task">
+        <dc:Bounds x="529" y="411" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1tvfavp_di" bpmnElement="approved_order_gateway" isMarkerVisible="true">
+        <dc:Bounds x="718" y="426" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="701" y="480" width="85" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1fr603v_di" bpmnElement="pizza_prepared_end">
+        <dc:Bounds x="969" y="730" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="951" y="770" width="73" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0pchrpu_di" bpmnElement="order_rejected_end">
+        <dc:Bounds x="1015" y="433" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="997" y="473" width="73" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_17lwbbk_di" bpmnElement="prepare_pizza_task">
+        <dc:Bounds x="698" y="708" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1cyz461_di" bpmnElement="rejection_task">
+        <dc:Bounds x="860" y="411" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1pbv1ay_di" bpmnElement="SequenceFlow_1pbv1ay">
+        <di:waypoint xsi:type="dc:Point" x="210" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="312" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="216" y="99" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0uf5a3d_di" bpmnElement="SequenceFlow_0uf5a3d">
+        <di:waypoint xsi:type="dc:Point" x="960" y="451" />
+        <di:waypoint xsi:type="dc:Point" x="1015" y="451" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="942.5" y="430" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_0agd165_di" bpmnElement="participant_manager">
+        <dc:Bounds x="125" y="351" width="1017" height="295" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0zvh96q_di" bpmnElement="SequenceFlow_0zvh96q">
+        <di:waypoint xsi:type="dc:Point" x="768" y="451" />
+        <di:waypoint xsi:type="dc:Point" x="814" y="451" />
+        <di:waypoint xsi:type="dc:Point" x="814" y="451" />
+        <di:waypoint xsi:type="dc:Point" x="860" y="451" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="833.6703703703704" y="429.5" width="7" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0kj7k0a_di" bpmnElement="SequenceFlow_0kj7k0a">
+        <di:waypoint xsi:type="dc:Point" x="629" y="451" />
+        <di:waypoint xsi:type="dc:Point" x="718" y="451" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="629" y="430" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_19ubrj7_di" bpmnElement="SequenceFlow_19ubrj7">
+        <di:waypoint xsi:type="dc:Point" x="412" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="484" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="448" y="99" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_0tpax5u_di" bpmnElement="IntermediateThrowEvent_start_approve">
+        <dc:Bounds x="484" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="501.10007412898443" y="142" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_11m9om8_di" bpmnElement="StartEvent_0tbclmn">
+        <dc:Bounds x="300" y="433" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="272" y="473" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="MessageFlow_006slr0_di" bpmnElement="MessageFlow_006slr0">
+        <di:waypoint xsi:type="dc:Point" x="502" y="138" />
+        <di:waypoint xsi:type="dc:Point" x="502" y="283" />
+        <di:waypoint xsi:type="dc:Point" x="322" y="283" />
+        <di:waypoint xsi:type="dc:Point" x="322" y="434" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="367" y="262" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ejcx69_di" bpmnElement="SequenceFlow_0ejcx69">
+        <di:waypoint xsi:type="dc:Point" x="336" y="451" />
+        <di:waypoint xsi:type="dc:Point" x="529" y="451" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="388" y="430" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_04lvjzg_di" bpmnElement="participant_engineer">
+        <dc:Bounds x="124" y="652" width="1018" height="264" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_122ntav_di" bpmnElement="SequenceFlow_122ntav">
+        <di:waypoint xsi:type="dc:Point" x="743" y="476" />
+        <di:waypoint xsi:type="dc:Point" x="743" y="540" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="754" y="502" width="8" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_15ybvn7_di" bpmnElement="SequenceFlow_15ybvn7">
+        <di:waypoint xsi:type="dc:Point" x="798" y="748" />
+        <di:waypoint xsi:type="dc:Point" x="883" y="748" />
+        <di:waypoint xsi:type="dc:Point" x="883" y="748" />
+        <di:waypoint xsi:type="dc:Point" x="969" y="748" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="898" y="742" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_0bgsymc_di" bpmnElement="IntermediateThrowEvent_1gvaqz2">
+        <dc:Bounds x="725" y="540" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="742.9018932874354" y="580" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0pd7xxh_di" bpmnElement="IntermediateThrowEvent_1j2m51s">
+        <dc:Bounds x="560" y="730" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="577.1619433198381" y="769.630229419703" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0g9waah_di" bpmnElement="SequenceFlow_0g9waah">
+        <di:waypoint xsi:type="dc:Point" x="596" y="748" />
+        <di:waypoint xsi:type="dc:Point" x="644" y="748" />
+        <di:waypoint xsi:type="dc:Point" x="644" y="748" />
+        <di:waypoint xsi:type="dc:Point" x="698" y="748" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="659" y="742" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_1kacpzl_di" bpmnElement="MessageFlow_1kacpzl">
+        <di:waypoint xsi:type="dc:Point" x="743" y="576" />
+        <di:waypoint xsi:type="dc:Point" x="743" y="697" />
+        <di:waypoint xsi:type="dc:Point" x="583" y="697" />
+        <di:waypoint xsi:type="dc:Point" x="583" y="731" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="663" y="676" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

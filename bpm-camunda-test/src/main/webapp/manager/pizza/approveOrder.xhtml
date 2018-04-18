@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<f:view>
+	<f:metadata>
+		<!-- Start working on a task. Task Id is read internally from
+       request parameters and cached in the CDI conversation scope.
+      -->
+		<f:event type="preRenderView"
+			listener="#{camundaTaskForm.startTaskForm()}" />
+	</f:metadata>
+	<h:head>
+		<title>Approve Order</title>
+	</h:head>
+	<h:body>
+		<p:growl autoUpdate="true" />
+
+		<h:panelGrid columns="2">
+			<f:facet name="header">
+				<h:outputLabel value="Approve order" />
+			</f:facet>
+			<h:outputLabel value="Order Id" />
+			<h:outputText value="#{approveOrderController.order.id}" />
+			<h:outputLabel value="Customer" />
+			<h:outputText value="#{approveOrderController.order.customer}" />
+			<h:outputLabel value="Address" />
+			<h:outputText value="#{approveOrderController.order.address}" />
+			<h:outputLabel value="Pizza" />
+			<h:outputText value="#{approveOrderController.order.pizza}" />
+		</h:panelGrid>
+		<h:form id="principal_form">
+			<h:panelGrid columns="2">
+				<label for="approved-order">Approve order</label>
+				<h:selectBooleanCheckbox value="#{approveOrderController.order.approved}" id="approved-order"/><br/>
+      			<h:commandButton id="submit_button" value="Approve Order" action="#{approveOrderController.save()}" />
+			</h:panelGrid>
+			<h:messages style="color:red;margin:8px;" />
+		</h:form>
+
+	</h:body>
+</f:view>
+</html>

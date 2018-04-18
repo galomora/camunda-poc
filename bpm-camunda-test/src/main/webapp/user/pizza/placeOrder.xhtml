@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<f:view>
+  <f:metadata>
+    <!-- Start a new process instance. The Process Definition Key is read internally from
+         request parameters and cached in the CDI conversation scope.
+    -->
+    <f:event type="preRenderView" listener="#{camundaTaskForm.startProcessInstanceByKeyForm()}" />
+  </f:metadata>
+<h:head>
+</h:head>
+<h:body>
+			<p:growl autoUpdate="true" />
+			<h:form id="principal_form">
+				<h:panelGrid columns="2">
+					<f:facet name="header">
+						<h:outputLabel value="Select you pizza" />
+					</f:facet>
+					<label for="pizza">Pizza</label>
+          <h:selectOneMenu id="pizza" value="#{processVariables['pizza']}">
+              <f:selectItem itemValue="Margarita" itemLabel="Margarita"/>
+              <f:selectItem itemValue="Salami" itemLabel="Salami"/>
+              <f:selectItem itemValue="Tonno" itemLabel="Tonno"/>
+              <f:selectItem itemValue="Prosciutto" itemLabel="Prosciutto"/>
+          </h:selectOneMenu>
+
+
+          <label for="customer">Customer</label>
+          <!-- create process variables using the processVariables map. -->
+          <h:inputText id="customer" value="#{processVariables['customer']}" required="true" />
+
+
+          <label for="address">Address</label>
+          <!-- create process variables using the processVariables map. -->
+          <h:inputText id="address" value="#{processVariables['address']}" required="true" />
+				</h:panelGrid>
+				
+				<h:commandButton id="submit_button" value="Order Pizza" action="#{camundaTaskForm.completeProcessInstanceForm()}" />
+
+      <h:messages style="color:red;margin:8px;" />
+			</h:form>
+	
+	
+</h:body>
+</f:view>
+</html>
