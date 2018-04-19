@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.3">
   <bpmn:collaboration id="collaboration_pizza">
-    <bpmn:participant id="participant_external" name="external" processRef="pizza_external" />
-    <bpmn:participant id="participant_manager" name="manager" processRef="pizza_manager" />
-    <bpmn:participant id="participant_engineer" name="engineer" processRef="pizza_engineer" />
+    <bpmn:participant id="participant_external" name="external" processRef="pizza_create_order" />
+    <bpmn:participant id="participant_manager" name="manager" processRef="pizza_order_manager" />
+    <bpmn:participant id="participant_engineer" name="engineer" processRef="pizza_order_engineer" />
     <bpmn:messageFlow id="MessageFlow_006slr0" sourceRef="IntermediateThrowEvent_start_approve" targetRef="StartEvent_0tbclmn" />
     <bpmn:messageFlow id="MessageFlow_1kacpzl" sourceRef="IntermediateThrowEvent_1gvaqz2" targetRef="IntermediateThrowEvent_1j2m51s" />
   </bpmn:collaboration>
-  <bpmn:process id="pizza_external" name="pizza_external" isExecutable="true" camunda:versionTag="1.0">
+  <bpmn:process id="pizza_create_order" name="pizza_create_order" isExecutable="true" camunda:versionTag="1.0">
     <bpmn:startEvent id="StartEvent_1" camunda:formKey="app:user/pizza/placeOrder.xhtml" camunda:initiator="#{userUtil.getPreferredUserName()}">
       <bpmn:outgoing>SequenceFlow_1pbv1ay</bpmn:outgoing>
     </bpmn:startEvent>
@@ -22,13 +22,13 @@
       <bpmn:messageEventDefinition messageRef="Message_0g7vom3" camunda:expression="#{genericStartProcessByMessageEvent.execute(execution)}">
         <bpmn:extensionElements>
           <camunda:field name="messageName">
-            <camunda:string>message_start_approve_order</camunda:string>
+            <camunda:string>message_start_approve_order_1</camunda:string>
           </camunda:field>
         </bpmn:extensionElements>
       </bpmn:messageEventDefinition>
     </bpmn:intermediateThrowEvent>
   </bpmn:process>
-  <bpmn:process id="pizza_manager" name="pizza_manager" isExecutable="true">
+  <bpmn:process id="pizza_order_manager" name="pizza_order_manager" isExecutable="true">
     <bpmn:userTask id="approve_order_task" name="Approve Order" camunda:formKey="app:manager/pizza/approveOrder.xhtml" camunda:candidateGroups="manager">
       <bpmn:incoming>SequenceFlow_0ejcx69</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0kj7k0a</bpmn:outgoing>
@@ -54,7 +54,7 @@
       <bpmn:messageEventDefinition messageRef="Message_07vnp7o" camunda:expression="#{genericStartProcessByMessageEvent.execute(execution)}">
         <bpmn:extensionElements>
           <camunda:field name="messageName">
-            <camunda:string>message_start_prepare</camunda:string>
+            <camunda:string>message_start_prepare_order</camunda:string>
           </camunda:field>
         </bpmn:extensionElements>
       </bpmn:messageEventDefinition>
@@ -69,8 +69,8 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0uf5a3d" sourceRef="rejection_task" targetRef="order_rejected_end" />
   </bpmn:process>
-  <bpmn:message id="Message_0g7vom3" name="message_start_approve_order" />
-  <bpmn:process id="pizza_engineer" name="pizza_engineer" isExecutable="true">
+  <bpmn:message id="Message_0g7vom3" name="message_start_approve_order_1" />
+  <bpmn:process id="pizza_order_engineer" name="pizza_order_engineer" isExecutable="true">
     <bpmn:startEvent id="IntermediateThrowEvent_1j2m51s" camunda:initiator="#{userUtil.getPreferredUserName()}">
       <bpmn:outgoing>SequenceFlow_0g9waah</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_07vnp7o" />
@@ -85,7 +85,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_0g9waah" sourceRef="IntermediateThrowEvent_1j2m51s" targetRef="prepare_pizza_task" />
     <bpmn:sequenceFlow id="SequenceFlow_15ybvn7" sourceRef="prepare_pizza_task" targetRef="pizza_prepared_end" />
   </bpmn:process>
-  <bpmn:message id="Message_07vnp7o" name="message_start_prepare" />
+  <bpmn:message id="Message_07vnp7o" name="message_start_prepare_order" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collaboration_pizza">
       <bpmndi:BPMNShape id="Participant_0ygiuty_di" bpmnElement="participant_external">
