@@ -67,7 +67,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_3_1.xsd"
 
 	<context-param>
 		<param-name>BootsFaces_THEME</param-name>
-		<param-value>simplex</param-value>
+		<param-value>yeti</param-value>
 	</context-param>
 
 	<security-constraint>

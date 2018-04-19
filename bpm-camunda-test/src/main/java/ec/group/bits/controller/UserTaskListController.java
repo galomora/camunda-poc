@@ -43,8 +43,9 @@ public class UserTaskListController implements Serializable {
 		return userTaskListService.getUnassignedTasks();
 	}
 	
-	public void claimTask (Task task) {
+	public void claimTask (Task task) throws URISyntaxException {
 		this.taskService.claim(task.getId(), userUtil.getPreferredUserName());
+		this.selectTask(task);
 	}
 	
 	public void selectTask (Task task) throws URISyntaxException {
