@@ -17,15 +17,16 @@
     </h:head>
     <h:body styleClass="body">
     	<ui:insert name="navigation">
-    	<b:navBar brand="ADO" brandHref="/" fixed="top" inverse="true">
+    	<b:navBar brand="ADO" brandHref="/" position="inline" inverse="true" >
             <b:navbarLinks>
-                <b:navLink value="Home" href="#"></b:navLink>
+                <b:navLink value="Home" href="/"></b:navLink>
                 <b:navLink value="About" href="#about"></b:navLink>
                 <b:navLink value="Contact" href="#contact"></b:navLink>
             </b:navbarLinks>
         </b:navBar>
         </ui:insert>
         <b:container fluid="true">
+        	
         	<ui:insert name="content">
         	</ui:insert>
         </b:container>

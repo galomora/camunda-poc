@@ -13,7 +13,7 @@
 					<b:row>
 						<b:column col-md="8">
 							<p:dataTable value="#{userTaskListController.assignedTasks}" var="task" selectionMode="single">
-								<p:ajax event="rowSelect" listener="#{userTaskListController.selectTask(task)}" update="principal_form:task-detail-panel"></p:ajax>
+								<p:ajax event="rowSelect" listener="#{userTaskListController.selectTask(task)}" update="principal_form:assigned-task-detail-panel"></p:ajax>
 								<p:column headerText="#{commonProperties['tags.name']}" >
 									<h:outputText value="#{task.name}" />
 								</p:column>
@@ -21,7 +21,7 @@
 							</p:dataTable>
 						</b:column>
 						<b:column col-md="4">
-							<b:panel title="#{commonProperties['tags.tasks.detail']}" look="primary" id="task-detail-panel">
+							<b:panel title="#{commonProperties['tags.tasks.detail']}" look="info" id="assigned-task-detail-panel" >
 								 <b:row>
 								 	<b:column col-md="2">
 								 		<label><h:outputText value="#{commonProperties['tags.name']}" /> </label>
@@ -39,7 +39,7 @@
 					<b:row>
 						<b:column col-md="8">
 							<p:dataTable value="#{userTaskListController.unassignedTasks}" var="task" selectionMode="single">
-								<p:ajax event="rowSelect" listener="#{userTaskListController.selectTask(task)}" update="principal_form:task-detail-panel"></p:ajax>
+								<p:ajax event="rowSelect" listener="#{userTaskListController.selectTask(task)}" update="principal_form:unassigned-task-detail-panel"></p:ajax>
 								<p:column headerText="#{commonProperties['tags.name']}" >
 									<h:outputText value="#{task.name}" />
 								</p:column>
@@ -47,7 +47,7 @@
 							</p:dataTable>
 						</b:column>
 						<b:column col-md="4">
-							<b:panel title="#{commonProperties['tags.tasks.detail']}" look="primary" id="task-detail-panel">
+							<b:panel title="#{commonProperties['tags.tasks.detail']}" look="info" id="unassigned-task-detail-panel">
 								 <b:row>
 								 	<b:column col-md="2">
 								 		<label><h:outputText value="#{commonProperties['tags.name']}" /> </label>
