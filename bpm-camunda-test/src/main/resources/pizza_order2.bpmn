@@ -19,7 +19,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_19ubrj7" sourceRef="persist_order_task" targetRef="IntermediateThrowEvent_start_approve" />
     <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_start_approve">
       <bpmn:incoming>SequenceFlow_19ubrj7</bpmn:incoming>
-      <bpmn:messageEventDefinition messageRef="Message_0g7vom3" camunda:expression="#{genericStartProcessByMessageEvent.execute(execution)}">
+      <bpmn:messageEventDefinition messageRef="Message_0g7vom3" camunda:class="ec.group.bits.bpm.event.GenericStartProcessByMessageEvent">
         <bpmn:extensionElements>
           <camunda:field name="messageName">
             <camunda:string>message_start_approve_order_1</camunda:string>
@@ -51,7 +51,7 @@
     </bpmn:serviceTask>
     <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_1gvaqz2">
       <bpmn:incoming>SequenceFlow_122ntav</bpmn:incoming>
-      <bpmn:messageEventDefinition messageRef="Message_07vnp7o" camunda:expression="#{genericStartProcessByMessageEvent.execute(execution)}">
+      <bpmn:messageEventDefinition messageRef="Message_07vnp7o" camunda:class="ec.group.bits.bpm.event.GenericStartProcessByMessageEvent">
         <bpmn:extensionElements>
           <camunda:field name="messageName">
             <camunda:string>message_start_prepare_order</camunda:string>
