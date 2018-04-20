@@ -12,7 +12,7 @@
 <h:body>
 	<ui:composition template="/layout/template.xhtml">
 		<ui:define name="content">
-			<p:growl autoUpdate="true" />
+			<p:growl><p:autoUpdate /></p:growl>
 			<h:form id="principal_form">
 				<b:panel title="#{commonProperties['tags.processes.start']}" look="primary">
 					<b:row rendered="#{p:ifAnyGranted('external')}">
@@ -27,7 +27,7 @@
 				
 				<b:panel title="#{commonProperties['tags.tasks.list']}" look="secondary">
 					<b:row col-md="3">
-						<p:commandLink action="/common/taskList.xhtml" value="#{commonProperties['tags.tasks.list']}" />
+						<p:commandLink action="/common/taskList.xhtml?faces-redirect=true" value="#{commonProperties['tags.tasks.list']}" />
 					</b:row>
 				</b:panel>
 					

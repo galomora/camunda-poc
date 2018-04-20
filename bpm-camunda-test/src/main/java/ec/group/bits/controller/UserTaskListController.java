@@ -3,7 +3,9 @@ package ec.group.bits.controller;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -33,8 +35,13 @@ public class UserTaskListController implements Serializable {
 	private List<Task> assignedTasks;
 	private TaskWithInfo taskWithInto;
 	
+	private static final Logger LOG = Logger.getLogger(UserTaskListController.class.getName());
+	
+	@PostConstruct
 	public void initUserTaskListController () {
+		LOG.info("inicializa UserTaskListController busca no asignadas");
 		searchUnassignedTasks ();
+		LOG.info("inicializa UserTaskListController busca asignadas");
 		searchAssignedTasks ();
 	}
 	

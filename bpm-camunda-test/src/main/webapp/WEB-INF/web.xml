@@ -77,7 +77,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_3_1.xsd"
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>external</role-name>
-
+			<role-name>manager</role-name>
 		</auth-constraint>
 		<!-- <user-data-constraint> -->
 		<!-- <transport-guarantee>CONFIDENTIAL</transport-guarantee> -->
@@ -95,9 +95,6 @@ http://java.sun.com/xml/ns/j2ee/web-app_3_1.xsd"
 	</security-role>
 	<security-role>
 		<role-name>external</role-name>
-	</security-role>
-	<security-role>
-		<role-name>offline-access</role-name>
 	</security-role>
 
 </web-app>
