@@ -29,23 +29,30 @@ public class UserTaskListController implements Serializable {
 	@Inject private TaskElementGenerator taskElementGenerator;
 	@Inject private UserTaskListService userTaskListService;
 	
+	private List<Task> unassignedTasks;
+	private List<Task> assignedTasks;
 	private TaskWithInfo taskWithInto;
 	
 	public void initUserTaskListController () {
+		searchUnassignedTasks ();
+		searchAssignedTasks ();
+	}
+	
+	public void searchUnassignedTasks () {
+		this.unassignedTasks = userTaskListService.getUnassignedTasks();
+	}
+	
+	public void searchAssignedTasks () {
+		this.assignedTasks = userTaskListService.getAssignedTasks();
+	}
+	
+	public void claimTask () throws URISyntaxException {
+		this.taskService.claim(taskWithInto.getTask().getId(), userUtil.getPreferredUserName());
 		
 	}
 	
-	public List<Task> getUnassignedTasks () {
-		return userTaskListService.getUnassignedTasks();
-	}
-	
-	public List<Task> getAssignedTasks () {
-		return userTaskListService.getUnassignedTasks();
-	}
-	
-	public void claimTask (Task task) throws URISyntaxException {
-		this.taskService.claim(task.getId(), userUtil.getPreferredUserName());
-		this.selectTask(task);
+	public void unclaimTask () throws URISyntaxException {
+		this.taskService.claim(taskWithInto.getTask().getId(), null);
 	}
 	
 	public void selectTask (Task task) throws URISyntaxException {
@@ -58,5 +65,17 @@ public class UserTaskListController implements Serializable {
 		return taskWithInto;
 	}
 
+	public void setTaskWithInto(TaskWithInfo taskWithInto) {
+		this.taskWithInto = taskWithInto;
+	}
+
+	public List<Task> getUnassignedTasks() {
+		return unassignedTasks;
+	}
+
+	public List<Task> getAssignedTasks() {
+		return assignedTasks;
+	}
+	
 	
 }

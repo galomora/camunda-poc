@@ -61,7 +61,15 @@
 								 		<label><h:outputText value="#{commonProperties['tags.tasks.claim']}" /> </label>
 								 	</b:column>
 								 	<b:column col-md="2">
-								 		<h:outputText value="#{userTaskListController.taskWithInto.task.name}" />
+								 		<b:commandLink action="#{userTaskListController.claimTask}" value="#{commonProperties['tags.tasks.claim']}" />
+								 	</b:column>
+								 </b:row>
+								 <b:row>
+								 	<b:column col-md="2">
+								 		<label><h:outputText value="#{commonProperties['tags.tasks.claim']}" /> </label>
+								 	</b:column>
+								 	<b:column col-md="2">
+								 		<b:commandLink action="#{userTaskListController.taskWithInto.link}" value="" />
 								 	</b:column>
 								 </b:row>
 							</b:panel>
