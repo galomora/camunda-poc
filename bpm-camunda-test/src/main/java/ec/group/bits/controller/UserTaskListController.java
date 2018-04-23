@@ -28,12 +28,15 @@ public class UserTaskListController implements Serializable {
 	@Inject
 	private TaskService taskService;
 	@Inject private UserUtil userUtil;
-	@Inject private TaskElementGenerator taskElementGenerator;
 	@Inject private UserTaskListService userTaskListService;
+	@Inject private TaskElementGenerator taskElementGenerator;
 	
 	private List<Task> unassignedTasks;
 	private List<Task> assignedTasks;
-	private TaskWithInfo taskWithInto;
+	private Task assignedTask;
+	private Task unassignedTask;
+	private TaskWithInfo assignedTaskWithInfo;
+	private TaskWithInfo unassignedTaskWithInfo;
 	
 	private static final Logger LOG = Logger.getLogger(UserTaskListController.class.getName());
 	
@@ -54,26 +57,40 @@ public class UserTaskListController implements Serializable {
 	}
 	
 	public void claimTask () throws URISyntaxException {
-		this.taskService.claim(taskWithInto.getTask().getId(), userUtil.getPreferredUserName());
+		this.taskService.claim(unassignedTask.getId(), userUtil.getPreferredUserName());
 		
 	}
 	
 	public void unclaimTask () throws URISyntaxException {
-		this.taskService.claim(taskWithInto.getTask().getId(), null);
+		this.taskService.claim(assignedTask.getId(), null);
 	}
 	
-	public void selectTask (Task task) throws URISyntaxException {
-		taskWithInto = taskElementGenerator.generateElement(task);
+	public void selectAssignedTask () throws URISyntaxException {
+		LOG.info("la asignada " + assignedTask.getId());
+		this.assignedTaskWithInfo = taskElementGenerator.generateElement(assignedTask);
 	}
-
+	
+	public void selectUnassignedTask () throws URISyntaxException {
+		LOG.info("la no asignada " + unassignedTask.getId());
+		this.unassignedTaskWithInfo = taskElementGenerator.generateElement(unassignedTask);
+	}
+	
 	//getters setters
 	
-	public TaskWithInfo getTaskWithInto() {
-		return taskWithInto;
+	public Task getAssignedTask() {
+		return assignedTask;
 	}
 
-	public void setTaskWithInto(TaskWithInfo taskWithInto) {
-		this.taskWithInto = taskWithInto;
+	public void setAssignedTask(Task assignedTask) {
+		this.assignedTask = assignedTask;
+	}
+
+	public Task getUnassignedTask() {
+		return unassignedTask;
+	}
+
+	public void setUnassignedTask(Task unassignedTask) {
+		this.unassignedTask = unassignedTask;
 	}
 
 	public List<Task> getUnassignedTasks() {
@@ -83,6 +100,13 @@ public class UserTaskListController implements Serializable {
 	public List<Task> getAssignedTasks() {
 		return assignedTasks;
 	}
-	
-	
+
+	public TaskWithInfo getAssignedTaskWithInfo() {
+		return assignedTaskWithInfo;
+	}
+
+	public TaskWithInfo getUnassignedTaskWithInfo() {
+		return unassignedTaskWithInfo;
+	}
+
 }

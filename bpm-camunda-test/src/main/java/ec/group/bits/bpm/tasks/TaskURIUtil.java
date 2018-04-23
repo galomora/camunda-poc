@@ -21,11 +21,13 @@ public class TaskURIUtil {
 	public String generateTaskFormURI (Task task) throws URISyntaxException {
 		
 //		"../.." + contextPath (of process application) + "/" + "app" + formKey (from BPMN 2.0 XML) + "processDefinitionKey=" + processDefinitionKey + "&callbackUrl=" + callbackUrl;
+		LOG.info("request " + request + "task " + task);
 		LOG.info("inicial " + request.getContextPath() + "/" + task.getFormKey());
 		URIBuilder builder = new URIBuilder(request.getContextPath() + "/" + task.getFormKey());
 //		builder.addParameter("processDefinitionKey", task.getProcessDefinitionId());
 		builder.addParameter("taskId", task.getId());
 		builder.addParameter("callbackUrl", request.getRequestURL().toString());
+		builder.addParameter("facesRedirect", "true");
 		LOG.info("resultado " + builder.build().toString());
 		return builder.build().toString() ;
 	}

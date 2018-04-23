@@ -1,39 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:b="http://bootsfaces.net/ui">
-<h:head>
-</h:head>
-<h:body>
-	<ui:composition template="/layout/template.xhtml">
-		<ui:define name="content">
-			<p:growl><p:autoUpdate /></p:growl>
-			<h:form id="principal_form">
-				<b:panel title="#{commonProperties['tags.processes.start']}" look="primary">
-					<b:row rendered="#{p:ifAnyGranted('external')}">
-						<b:column col-md="3">
-							<h:outputLabel value="Start process order pizza" />
-						</b:column>
-						<b:column col-md="9">
-							<p:commandLink action="/user/pizza/placeOrder.xhtml?faces-redirect=true&#38;processDefinitionKey=pizza_create_order&#38;callbackUrl=http:&#47;&#47;localhost:8080&#47;pizza-order" value="Start" />		
-						</b:column>
-					</b:row>
-				</b:panel>
-				
-				<b:panel title="#{commonProperties['tags.tasks.list']}" look="secondary">
-					<b:row col-md="3">
-						<p:commandLink action="/common/taskList.xhtml?faces-redirect=true" value="#{commonProperties['tags.tasks.list']}" />
-					</b:row>
-				</b:panel>
-					
-				
-			</h:form>
-		</ui:define>
-	</ui:composition>
-</h:body>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="/layout/template.xhtml">
+	<ui:define name="title">#{commonProperties['title.greeting']}</ui:define>
+	<ui:define name="content">
+		<p:growl>
+			<p:autoUpdate />
+		</p:growl>
+		<h:form id="principal_form">
+			<b:panel title="#{commonProperties['tags.processes.start']}" look="primary">
+				<b:row rendered="#{p:ifAnyGranted('external')}">
+					<b:column col-md="3">
+						<h:outputLabel value="Start process order pizza" />
+					</b:column>
+					<b:column col-md="9">
+						<p:commandLink
+							action="/user/pizza/placeOrder.xhtml?faces-redirect=true&#38;processDefinitionKey=pizza_create_order&#38;callbackUrl=http:&#47;&#47;localhost:8080&#47;pizza-order"
+							value="Start" />
+					</b:column>
+				</b:row>
+			</b:panel>
+
+			<b:panel title="#{commonProperties['tags.tasks.list']}" look="secondary">
+				<b:row col-md="3">
+					<p:commandLink action="/common/taskList.xhtml?faces-redirect=true" value="#{commonProperties['tags.tasks.list']}" />
+				</b:row>
+			</b:panel>
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>
+
 </html>
