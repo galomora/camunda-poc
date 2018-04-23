@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.camunda.bpm.engine.form.FormData;
 import org.camunda.bpm.engine.task.Task;
 
 @Model
@@ -22,8 +21,8 @@ public class TaskURIUtil {
 	public String generateTaskFormURI (Task task) throws URISyntaxException {
 		
 //		"../.." + contextPath (of process application) + "/" + "app" + formKey (from BPMN 2.0 XML) + "processDefinitionKey=" + processDefinitionKey + "&callbackUrl=" + callbackUrl;
-		LOG.info("inicial " + request.getContextPath() + "/" + task.getFormKey());
-		URIBuilder builder = new URIBuilder(request.getContextPath() + "/" + task.getFormKey());
+		
+		URIBuilder builder = new URIBuilder(this.replaceAppKeyword(task.getFormKey()));
 //		builder.addParameter("processDefinitionKey", task.getProcessDefinitionId());
 		builder.addParameter("taskId", task.getId());
 		builder.addParameter("callbackUrl", request.getRequestURL().toString());
