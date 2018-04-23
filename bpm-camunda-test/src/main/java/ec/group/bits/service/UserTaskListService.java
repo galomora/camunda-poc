@@ -30,7 +30,7 @@ public class UserTaskListService {
 //		roles.stream().forEach(role -> unassigned.addAll(getUnassignedTasksByRole (role)));
 //		return unassigned;
 		LOG.info("a consultar unassigned roles " + roles);
-		List<Task> tareas = this.taskService.createTaskQuery().taskCandidateGroupIn(new ArrayList<>(roles)).list();
+		List<Task> tareas = this.taskService.createTaskQuery().taskCandidateGroupIn(new ArrayList<>(roles)).initializeFormKeys().list();
 		LOG.info("consultado size " + tareas.size());
 		tareas.stream().forEach(tarea -> LOG.info("tarea " + tarea.toString()));
 		return tareas;
@@ -39,11 +39,11 @@ public class UserTaskListService {
 	public List<Task> getUnassignedTasksByRole (String roleName) {
 //		RoleWithProcesses role = RoleWithProcesses.getRoleByName(roleName);
 //		return this.taskService.createTaskQuery().processDefinitionKeyIn (role.getProcessesDefinitionNames()).taskUnassigned().list();
-		return this.taskService.createTaskQuery().taskCandidateGroup(roleName).taskUnassigned().list();
+		return this.taskService.createTaskQuery().taskCandidateGroup(roleName).taskUnassigned().initializeFormKeys().list();
 	}
 	
 	public List<Task> getAssignedTasks () {
-		List<Task> tareas = this.taskService.createTaskQuery().taskAssignee(userUtil.getPreferredUserName()).list();
+		List<Task> tareas = this.taskService.createTaskQuery().taskAssignee(userUtil.getPreferredUserName()).initializeFormKeys().list();
 		LOG.info("consultado asignadas size " + tareas.size());
 		tareas.stream().forEach(tarea -> LOG.info("tarea " + tarea.toString()));
 		return tareas;

@@ -37,15 +37,17 @@ public class UserTaskListController implements Serializable {
 	private Task unassignedTask;
 	private TaskWithInfo assignedTaskWithInfo;
 	private TaskWithInfo unassignedTaskWithInfo;
+	private Boolean claimed, unclaimed;
+	
 	
 	private static final Logger LOG = Logger.getLogger(UserTaskListController.class.getName());
 	
 	@PostConstruct
 	public void initUserTaskListController () {
-		LOG.info("inicializa UserTaskListController busca no asignadas");
 		searchUnassignedTasks ();
-		LOG.info("inicializa UserTaskListController busca asignadas");
 		searchAssignedTasks ();
+		claimed = Boolean.FALSE;
+		unclaimed = Boolean.FALSE;
 	}
 	
 	public void searchUnassignedTasks () {
@@ -58,20 +60,23 @@ public class UserTaskListController implements Serializable {
 	
 	public void claimTask () throws URISyntaxException {
 		this.taskService.claim(unassignedTask.getId(), userUtil.getPreferredUserName());
-		
+		claimed = true;
 	}
 	
 	public void unclaimTask () throws URISyntaxException {
 		this.taskService.claim(assignedTask.getId(), null);
+		 unclaimed = Boolean.TRUE;
 	}
 	
 	public void selectAssignedTask () throws URISyntaxException {
 		LOG.info("la asignada " + assignedTask.getId());
+		unclaimed = Boolean.FALSE;
 		this.assignedTaskWithInfo = taskElementGenerator.generateElement(assignedTask);
 	}
 	
 	public void selectUnassignedTask () throws URISyntaxException {
 		LOG.info("la no asignada " + unassignedTask.getId());
+		claimed = Boolean.FALSE;
 		this.unassignedTaskWithInfo = taskElementGenerator.generateElement(unassignedTask);
 	}
 	
