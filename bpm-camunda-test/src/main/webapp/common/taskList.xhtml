@@ -35,11 +35,11 @@
 							<b:row>
 								<b:column col-md="4">
 									<b:commandButton id="unclaim_task_button" value="#{commonProperties['tags.tasks.unclaim']}" action="#{userTaskListController.unclaimTask}"
-									update=":assigned-task-link-row" /> />
+									update="principal_form:assigned-task-link-row" />
 								</b:column>
 							</b:row>
-							<b:row id="assigned-task-link-row" rendered="#{! userTaskListController.unclaimed}">
-								<b:column col-md="4">
+							<b:row id="assigned-task-link-row">
+								<b:column col-md="4" rendered="#{! userTaskListController.unclaimed}">
 									<b:commandLink id="execute_assigned_task_button" value="#{commonProperties['tags.tasks.execute']}"
 									 action="#{userTaskListController.assignedTaskWithInfo.link}" />
 								</b:column>
@@ -76,11 +76,11 @@
 							<b:row>
 								<b:column col-md="4">
 									<b:commandButton id="claim_task_button" value="#{commonProperties['tags.tasks.claim']}" action="#{userTaskListController.claimTask}"
-									update=":unassigned-task-link-row" />
+									update="principal_form:unassigned-task-link-row" />
 								</b:column>
 							</b:row>
-							<b:row id="unassigned-task-link-row" rendered="#{userTaskListController.claimed}">
-								<b:column col-md="4">
+							<b:row id="unassigned-task-link-row">
+								<b:column col-md="4" rendered="#{userTaskListController.claimed}">
 									<b:commandLink id="execute_unassigned_task_button" value="#{commonProperties['tags.tasks.execute']}"
 									 action="#{userTaskListController.unassignedTaskWithInfo.link}" />
 								</b:column>

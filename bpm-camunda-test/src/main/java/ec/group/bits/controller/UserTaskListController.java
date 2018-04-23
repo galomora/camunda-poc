@@ -114,4 +114,14 @@ public class UserTaskListController implements Serializable {
 		return unassignedTaskWithInfo;
 	}
 
+	public Boolean getClaimed() {
+		return claimed;
+	}
+
+	public Boolean getUnclaimed() {
+		return unclaimed;
+	}
+	
+	
+
 }
