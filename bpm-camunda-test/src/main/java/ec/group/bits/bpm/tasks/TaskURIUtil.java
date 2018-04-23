@@ -19,9 +19,6 @@ public class TaskURIUtil {
 	@Inject
 	HttpServletRequest request;
 	
-	@Inject
-	FormData formData;
-	
 	public String generateTaskFormURI (Task task) throws URISyntaxException {
 		
 //		"../.." + contextPath (of process application) + "/" + "app" + formKey (from BPMN 2.0 XML) + "processDefinitionKey=" + processDefinitionKey + "&callbackUrl=" + callbackUrl;
