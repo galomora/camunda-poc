@@ -19,31 +19,30 @@
 			<p:autoUpdate />
 		</p:growl>
 		<h:form id="principal_form">
-			<h:panelGrid columns="2">
+			<b:messages />
+			<b:panelGrid colSpans="1, 11" size="xs">
 				<f:facet name="header">
 					<h:outputLabel value="Select you pizza" />
 				</f:facet>
 				<label for="pizza">Pizza</label>
-				<h:selectOneMenu id="pizza" value="#{processVariables['pizza']}">
+				<b:selectOneMenu id="pizza" value="#{processVariables['pizza']}" span="4">
 					<f:selectItem itemValue="Margarita" itemLabel="Margarita" />
 					<f:selectItem itemValue="Salami" itemLabel="Salami" />
 					<f:selectItem itemValue="Tonno" itemLabel="Tonno" />
 					<f:selectItem itemValue="Prosciutto" itemLabel="Prosciutto" />
-				</h:selectOneMenu>
+				</b:selectOneMenu>
 
 				<label for="customer">Customer</label>
 				<!-- create process variables using the processVariables map. -->
-				<b:inputText id="customer" value="#{processVariables['customer']}" required="true" />
+				<b:inputText id="customer" value="#{processVariables['customer']}" required="true" span="4" />
 
 				<label for="address">Address</label>
 				<!-- create process variables using the processVariables map. -->
-				<b:inputText id="address" value="#{processVariables['address']}" required="true" />
-			</h:panelGrid>
+				<b:inputText id="address" value="#{processVariables['address']}" required="true" span="4" />
+			</b:panelGrid>
 
-			<b:commandButton id="submit_button_b" value="Order Pizza boots" action="#{camundaTaskForm.completeProcessInstanceForm()}" />
+			<b:commandButton id="submit_button_b" look="primary" value="Order Pizza boots" action="#{camundaTaskForm.completeProcessInstanceForm()}" />
 			
-
-			<b:messages />
 		</h:form>
 	</ui:define>
 </ui:composition>

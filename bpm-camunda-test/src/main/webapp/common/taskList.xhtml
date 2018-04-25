@@ -12,7 +12,7 @@
 				<b:row>
 					<b:column col-md="8">
 						<p:dataTable value="#{userTaskListController.assignedTasks}" var="task" selectionMode="single"
-							selection="#{userTaskListController.assignedTask}" rowKey="#{task.id}">
+							selection="#{userTaskListController.assignedTask}" rowKey="#{task.id}" rows="5">
 							<p:ajax event="rowSelect" listener="#{userTaskListController.selectAssignedTask()}" update="principal_form:assigned-task-detail-panel">
 
 							</p:ajax>
@@ -65,7 +65,7 @@
 				<b:row>
 					<b:column col-md="8">
 						<p:dataTable value="#{userTaskListController.unassignedTasks}" var="task" selectionMode="single"
-							selection="#{userTaskListController.unassignedTask}" rowKey="#{task.id}">
+							selection="#{userTaskListController.unassignedTask}" rowKey="#{task.id}" rows="10">
 							<p:ajax event="rowSelect" listener="#{userTaskListController.selectUnassignedTask()}" update="principal_form:unassigned-task-detail-panel">
 
 							</p:ajax>

@@ -8,7 +8,7 @@
     <bpmn:messageFlow id="MessageFlow_1kacpzl" sourceRef="IntermediateThrowEvent_1gvaqz2" targetRef="IntermediateThrowEvent_1j2m51s" />
   </bpmn:collaboration>
   <bpmn:process id="pizza_create_order" name="pizza_create_order" isExecutable="true" camunda:versionTag="1.0">
-    <bpmn:startEvent id="StartEvent_1" camunda:formKey="app:user/pizza/placeOrder.xhtml" camunda:initiator="#{userUtil.getPreferredUserName()}">
+    <bpmn:startEvent id="StartEvent_1" camunda:formKey="app:user/pizza/placeOrder.xhtml" camunda:initiator="${userUtil.getPreferredUserName()}">
       <bpmn:outgoing>SequenceFlow_1pbv1ay</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="persist_order_task" name="Persist Order" camunda:expression="${orderController.saveOrder(execution)}">
@@ -29,26 +29,15 @@
     </bpmn:intermediateThrowEvent>
   </bpmn:process>
   <bpmn:process id="pizza_order_manager" name="pizza_order_manager" isExecutable="true">
-    <bpmn:userTask id="approve_order_task" name="Approve Order" camunda:formKey="app:manager/pizza/approveOrder.xhtml" camunda:candidateGroups="manager">
-      <bpmn:incoming>SequenceFlow_0ejcx69</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0kj7k0a</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:exclusiveGateway id="approved_order_gateway" name="Order Approved?">
-      <bpmn:incoming>SequenceFlow_0kj7k0a</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0zvh96q</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_122ntav</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:startEvent id="StartEvent_0tbclmn" camunda:initiator="#{userUtil.getPreferredUserName()}">
-      <bpmn:outgoing>SequenceFlow_0ejcx69</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_0g7vom3" />
-    </bpmn:startEvent>
-    <bpmn:endEvent id="order_rejected_end" name="Order Rejected">
-      <bpmn:incoming>SequenceFlow_0uf5a3d</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:serviceTask id="rejection_task" name="Send Rejection Email" camunda:expression="${rejectionEmailController.sendRejectionEmail()}">
-      <bpmn:incoming>SequenceFlow_0zvh96q</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0uf5a3d</bpmn:outgoing>
-    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0uf5a3d" sourceRef="rejection_task" targetRef="order_rejected_end" />
+    <bpmn:sequenceFlow id="SequenceFlow_122ntav" name="Y" sourceRef="approved_order_gateway" targetRef="IntermediateThrowEvent_1gvaqz2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${orderApprovedDecisionController.isApproved()}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0zvh96q" name="N" sourceRef="approved_order_gateway" targetRef="rejection_task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not orderApprovedDecisionController.isApproved()}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0kj7k0a" sourceRef="approve_order_task" targetRef="approved_order_gateway" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ejcx69" sourceRef="StartEvent_0tbclmn" targetRef="approve_order_task" />
     <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_1gvaqz2">
       <bpmn:incoming>SequenceFlow_122ntav</bpmn:incoming>
       <bpmn:messageEventDefinition messageRef="Message_07vnp7o" camunda:class="ec.group.bits.bpm.event.GenericStartProcessByMessageEvent">
@@ -59,15 +48,26 @@
         </bpmn:extensionElements>
       </bpmn:messageEventDefinition>
     </bpmn:intermediateThrowEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0ejcx69" sourceRef="StartEvent_0tbclmn" targetRef="approve_order_task" />
-    <bpmn:sequenceFlow id="SequenceFlow_0kj7k0a" sourceRef="approve_order_task" targetRef="approved_order_gateway" />
-    <bpmn:sequenceFlow id="SequenceFlow_0zvh96q" name="N" sourceRef="approved_order_gateway" targetRef="rejection_task">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not orderApprovedDecisionController.isApproved()}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_122ntav" name="Y" sourceRef="approved_order_gateway" targetRef="IntermediateThrowEvent_1gvaqz2">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${orderApprovedDecisionController.isApproved()}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0uf5a3d" sourceRef="rejection_task" targetRef="order_rejected_end" />
+    <bpmn:serviceTask id="rejection_task" name="Send Rejection Email" camunda:expression="${rejectionEmailController.sendRejectionEmail()}">
+      <bpmn:incoming>SequenceFlow_0zvh96q</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0uf5a3d</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="order_rejected_end" name="Order Rejected">
+      <bpmn:incoming>SequenceFlow_0uf5a3d</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_0tbclmn" camunda:initiator="${userUtil.getPreferredUserName()}">
+      <bpmn:outgoing>SequenceFlow_0ejcx69</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_0g7vom3" />
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="approved_order_gateway" name="Order Approved?">
+      <bpmn:incoming>SequenceFlow_0kj7k0a</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0zvh96q</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_122ntav</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="approve_order_task" name="Approve Order" camunda:formKey="app:manager/pizza/approveOrder.xhtml" camunda:candidateGroups="manager">
+      <bpmn:incoming>SequenceFlow_0ejcx69</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0kj7k0a</bpmn:outgoing>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmn:message id="Message_0g7vom3" name="message_start_approve_order_1" />
   <bpmn:process id="pizza_order_engineer" name="pizza_order_engineer" isExecutable="true">
@@ -138,7 +138,7 @@
         <di:waypoint xsi:type="dc:Point" x="960" y="451" />
         <di:waypoint xsi:type="dc:Point" x="1015" y="451" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="942.5" y="430" width="90" height="12" />
+          <dc:Bounds x="943" y="430" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0agd165_di" bpmnElement="participant_manager">
@@ -150,7 +150,7 @@
         <di:waypoint xsi:type="dc:Point" x="814" y="451" />
         <di:waypoint xsi:type="dc:Point" x="860" y="451" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="833.6703703703704" y="429.5" width="7" height="12" />
+          <dc:Bounds x="834" y="430" width="7" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0kj7k0a_di" bpmnElement="SequenceFlow_0kj7k0a">
@@ -217,7 +217,7 @@
       <bpmndi:BPMNShape id="IntermediateThrowEvent_0bgsymc_di" bpmnElement="IntermediateThrowEvent_1gvaqz2">
         <dc:Bounds x="725" y="540" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="742.9018932874354" y="580" width="0" height="12" />
+          <dc:Bounds x="698" y="580" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_0pd7xxh_di" bpmnElement="IntermediateThrowEvent_1j2m51s">
@@ -241,7 +241,7 @@
         <di:waypoint xsi:type="dc:Point" x="583" y="697" />
         <di:waypoint xsi:type="dc:Point" x="583" y="731" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="663" y="676" width="0" height="12" />
+          <dc:Bounds x="618" y="676" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
