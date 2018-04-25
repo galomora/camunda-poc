@@ -22,17 +22,18 @@ public class TaskURIUtil {
 		
 //		"../.." + contextPath (of process application) + "/" + "app" + formKey (from BPMN 2.0 XML) + "processDefinitionKey=" + processDefinitionKey + "&callbackUrl=" + callbackUrl;
 		
-		URIBuilder builder = new URIBuilder(this.replaceAppKeyword(task.getFormKey()));
+		URIBuilder builder = new URIBuilder(this.generateURI(task.getFormKey()));
 //		builder.addParameter("processDefinitionKey", task.getProcessDefinitionId());
 		builder.addParameter("taskId", task.getId());
+		builder.addParameter("faces-redirect", "true");
 		builder.addParameter("callbackUrl", request.getRequestURL().toString());
-		builder.addParameter("facesRedirect", "true");
 		LOG.info("resultado " + builder.build().toString());
 		return builder.build().toString() ;
 	}
 	
-	public String replaceAppKeyword (String formKey) {
-		String contextPath =  request.getContextPath() + "/";
+	public String generateURI (String formKey) {
+//		String contextPath = request.getContextPath() +
+		String contextPath = "/";
 		return replaceAppKeyword(formKey, contextPath);
 	}
 	

@@ -28,6 +28,7 @@ public class TaskWithInfo {
 		this.task = task;
 	}
 	public String getLink() {
+		System.out.println("el link " + link);
 		return link;
 	}
 	public void setLink(String link) {

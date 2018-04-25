@@ -69,15 +69,29 @@ public class UserTaskListController implements Serializable {
 	}
 	
 	public void selectAssignedTask () throws URISyntaxException {
-		LOG.info("la asignada " + assignedTask.getId());
 		unclaimed = Boolean.FALSE;
 		this.assignedTaskWithInfo = taskElementGenerator.generateElement(assignedTask);
 	}
 	
 	public void selectUnassignedTask () throws URISyntaxException {
-		LOG.info("la no asignada " + unassignedTask.getId());
 		claimed = Boolean.FALSE;
 		this.unassignedTaskWithInfo = taskElementGenerator.generateElement(unassignedTask);
+	}
+	
+	public String goToAssignedTask () {
+		if (this.assignedTaskWithInfo == null) {
+			return "#";
+		} else {
+			return this.assignedTaskWithInfo.getLink();
+		}
+	}
+	
+	public String goToUnassignedTask () {
+		if (this.unassignedTaskWithInfo == null) {
+			return "#";
+		} else {
+			return this.unassignedTaskWithInfo.getLink();
+		}
 	}
 	
 	//getters setters

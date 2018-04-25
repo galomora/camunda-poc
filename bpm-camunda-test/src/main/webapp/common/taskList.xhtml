@@ -12,7 +12,7 @@
 				<b:row>
 					<b:column col-md="8">
 						<p:dataTable value="#{userTaskListController.assignedTasks}" var="task" selectionMode="single"
-							selection="#{userTaskListController.unassignedTask}" rowKey="#{task.id}">
+							selection="#{userTaskListController.assignedTask}" rowKey="#{task.id}">
 							<p:ajax event="rowSelect" listener="#{userTaskListController.selectAssignedTask()}" update="principal_form:assigned-task-detail-panel">
 
 							</p:ajax>
@@ -50,8 +50,10 @@
 							</b:row>
 							<b:row id="assigned-task-link-row">
 								<b:column col-md="4" rendered="#{! userTaskListController.unclaimed}">
-									<b:commandLink id="execute_assigned_task_button" value="#{commonProperties['tags.tasks.execute']}"
-										action="#{userTaskListController.assignedTaskWithInfo.link}" />
+									<p:commandLink id="execute_assigned_task_button" value="#{commonProperties['tags.tasks.execute']}"
+										action="#{userTaskListController.goToAssignedTask}" ajax="false"/>
+									<p:link href="#{userTaskListController.goToAssignedTask()}" value="#{commonProperties['tags.tasks.execute']}" />
+									<h:outputLink value="#{userTaskListController.goToAssignedTask()}">#{commonProperties['tags.tasks.execute']}</h:outputLink>  
 								</b:column>
 							</b:row>
 						</b:panel>
@@ -101,8 +103,10 @@
 							</b:row>
 							<b:row id="unassigned-task-link-row">
 								<b:column col-md="4" rendered="#{userTaskListController.claimed}">
-									<b:commandLink id="execute_unassigned_task_button" value="#{commonProperties['tags.tasks.execute']}"
-										action="#{userTaskListController.unassignedTaskWithInfo.link}" />
+									<p:commandLink id="execute_unassigned_task_button" value="#{commonProperties['tags.tasks.execute']}"
+										action="#{userTaskListController.goToUnassignedTask}" ajax="false" />
+									<p:link href="#{userTaskListController.goToUnassignedTask()}" value="#{commonProperties['tags.tasks.execute']}" />
+									<h:outputLink value="#{userTaskListController.goToAssignedTask()}">#{commonProperties['tags.tasks.execute']}</h:outputLink>
 								</b:column>
 							</b:row>
 						</b:panel>
