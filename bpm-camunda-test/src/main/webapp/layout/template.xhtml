@@ -20,9 +20,10 @@
 				</b:navbarLinks>
 				<b:navbarLinks>
 					<b:dropMenu value="Dropdown" icon="glyphicon-th-list">
-						<b:navLink value="Action" href="#"></b:navLink>
-						<b:navLink value="Another action" href="#"></b:navLink>
-						<b:navLink value="Something else here" href="#"></b:navLink>
+						<p:link	href="/user/pizza/placeOrder.xhtml?processDefinitionKey=pizza_create_order&#38;callbackUrl=#{request.requestURL.toString()}"
+							value="#{commonProperties['tags.processes.start.process']}" />
+						<b:navLink value="#{commonProperties['tags.processes.start.process']}" 
+						href="/user/pizza/placeOrder.xhtml?processDefinitionKey=pizza_create_order&#38;callbackUrl=#{request.requestURL.toString()}"></b:navLink>
 					</b:dropMenu>
 				</b:navbarLinks>
 
