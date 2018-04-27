@@ -15,7 +15,7 @@
 	<ui:define name="title">Approve Order</ui:define>
 	<ui:define name="content">
 		<p:growl ><p:autoUpdate /> </p:growl>
-		<b:panelGrid columns="2" >
+		<b:panelGrid columns="2" col-spans="1, 11" >
 			<h:outputLabel value="Order Id" />
 			<h:outputText value="#{approveOrderController.order.id}" />
 			<h:outputLabel value="Customer" />
@@ -26,12 +26,12 @@
 			<h:outputText value="#{approveOrderController.order.pizza}" />
 		</b:panelGrid>
 		<h:form id="principal_form">
-			<h:panelGrid columns="2">
+			<b:panelGrid columns="2" col-spans="1, 11" size="xs">
 				<label for="approved-order">Approve order</label>
 				<h:selectBooleanCheckbox value="#{approveOrderController.order.approved}" id="approved-order" />
 				<br />
 				<h:commandButton id="submit_button" value="Approve Order" action="#{approveOrderController.save()}" />
-			</h:panelGrid>
+			</b:panelGrid>
 			<h:messages style="color:red;margin:8px;" />
 		</h:form>
 	</ui:define>

@@ -13,20 +13,32 @@
 		<h:form id="principal_form">
 			<b:panel title="#{commonProperties['tags.processes.start']}" look="primary">
 				<b:row rendered="#{p:ifAnyGranted('external')}">
-					<b:column col-md="9" col-xs="9">
+					<b:column col-md="3">
 						<h:outputLabel value="Start process order pizza" />
 					</b:column>
-					<b:column col-md="3" col-xs="3">
-						<p:commandLink
-							action="/user/pizza/placeOrder.xhtml?faces-redirect=true&#38;processDefinitionKey=pizza_create_order&#38;callbackUrl=http:&#47;&#47;localhost:8080&#47;pizza-order"
-							value="Start" />
+					<b:column col-md="9">
+						<p:link	href="/user/pizza/placeOrder.xhtml?processDefinitionKey=pizza_create_order&#38;callbackUrl=#{request.requestURL.toString()}"
+							value="#{commonProperties['tags.processes.start.process']}" />
 					</b:column>
 				</b:row>
 			</b:panel>
 
-			<b:panel title="#{commonProperties['tags.tasks.list']}" look="primary">
-				<b:row col-md="3">
-					<p:commandLink action="/common/taskList.xhtml?faces-redirect=true" value="#{commonProperties['tags.tasks.list']}" />
+			<b:panel title="#{commonProperties['tags.options']}" look="primary">
+				<b:row>
+					<b:column col-md="3">
+						<h:outputLabel value="#{commonProperties['tags.tasks.list']}" />
+					</b:column>
+					<b:column col-md="9">
+						<p:commandLink action="/common/taskList.xhtml?faces-redirect=true" value="#{commonProperties['tags.tasks.list']}" />
+					</b:column>
+				</b:row>
+				<b:row rendered="#{p:ifAnyGranted('task_manager,administrator')}">
+					<b:column col-md="3">
+						<h:outputLabel value="#{commonProperties['tags.tasks.list']}" />
+					</b:column>
+					<b:column col-md="9">
+						<p:commandLink action="/admin/taskList.xhtml?faces-redirect=true" value="#{commonProperties['tags.tasks.list.admin']}" />
+					</b:column>
 				</b:row>
 			</b:panel>
 

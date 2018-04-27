@@ -3,7 +3,6 @@ package ec.group.bits.controller;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -13,23 +12,20 @@ import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.omnifaces.cdi.ViewScoped;
 
-import ec.group.bits.controller.model.TaskElementGenerator;
-import ec.group.bits.controller.model.TaskWithInfo;
-import ec.group.bits.service.UserTaskListService;
+import ec.group.bits.bpm.tasks.UserTaskListService;
+import ec.group.bits.bpm.tasks.model.TaskWithInfo;
 import ec.group.bits.util.UserUtil;
 
 @Named
 @ViewScoped
-public class UserTaskListController implements Serializable {
+public class UserTaskListController extends BaseController implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Inject
-	private TaskService taskService;
+	@Inject	private TaskService taskService;
 	@Inject private UserUtil userUtil;
 	@Inject private UserTaskListService userTaskListService;
-	@Inject private TaskElementGenerator taskElementGenerator;
 	
 	private List<Task> unassignedTasks;
 	private List<Task> assignedTasks;
@@ -37,17 +33,17 @@ public class UserTaskListController implements Serializable {
 	private Task unassignedTask;
 	private TaskWithInfo assignedTaskWithInfo;
 	private TaskWithInfo unassignedTaskWithInfo;
-	private Boolean claimed, unclaimed;
+	private Boolean showAssignedLink, showUnassignedLink;
 	
 	
-	private static final Logger LOG = Logger.getLogger(UserTaskListController.class.getName());
+//	private static final Logger LOG = Logger.getLogger(UserTaskListController.class.getName());
 	
 	@PostConstruct
 	public void initUserTaskListController () {
 		searchUnassignedTasks ();
 		searchAssignedTasks ();
-		claimed = Boolean.FALSE;
-		unclaimed = Boolean.FALSE;
+		showAssignedLink = Boolean.FALSE;
+		showUnassignedLink = Boolean.FALSE;
 	}
 	
 	public void searchUnassignedTasks () {
@@ -60,22 +56,22 @@ public class UserTaskListController implements Serializable {
 	
 	public void claimTask () throws URISyntaxException {
 		this.taskService.claim(unassignedTask.getId(), userUtil.getPreferredUserName());
-		claimed = true;
+		showUnassignedLink = true;
 	}
 	
 	public void unclaimTask () throws URISyntaxException {
 		this.taskService.claim(assignedTask.getId(), null);
-		 unclaimed = Boolean.TRUE;
+		 showAssignedLink = Boolean.FALSE;
 	}
 	
 	public void selectAssignedTask () throws URISyntaxException {
-		unclaimed = Boolean.FALSE;
-		this.assignedTaskWithInfo = taskElementGenerator.generateElement(assignedTask);
+		showAssignedLink = Boolean.TRUE;
+		this.assignedTaskWithInfo = userTaskListService.generateTaskLink(assignedTask);
 	}
 	
 	public void selectUnassignedTask () throws URISyntaxException {
-		claimed = Boolean.FALSE;
-		this.unassignedTaskWithInfo = taskElementGenerator.generateElement(unassignedTask);
+		showUnassignedLink = Boolean.FALSE;
+		this.unassignedTaskWithInfo = userTaskListService.generateTaskLink(unassignedTask);
 	}
 	
 	public String goToAssignedTask () {
@@ -129,11 +125,11 @@ public class UserTaskListController implements Serializable {
 	}
 
 	public Boolean getClaimed() {
-		return claimed;
+		return showAssignedLink;
 	}
 
 	public Boolean getUnclaimed() {
-		return unclaimed;
+		return showUnassignedLink;
 	}
 	
 	

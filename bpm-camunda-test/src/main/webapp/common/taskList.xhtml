@@ -50,10 +50,7 @@
 							</b:row>
 							<b:row id="assigned-task-link-row">
 								<b:column col-md="4" rendered="#{! userTaskListController.unclaimed}">
-									<p:commandLink id="execute_assigned_task_button" value="#{commonProperties['tags.tasks.execute']}"
-										action="#{userTaskListController.goToAssignedTask}" ajax="false"/>
 									<p:link href="#{userTaskListController.goToAssignedTask()}" value="#{commonProperties['tags.tasks.execute']}" />
-									<h:outputLink value="#{userTaskListController.goToAssignedTask()}">#{commonProperties['tags.tasks.execute']}</h:outputLink>  
 								</b:column>
 							</b:row>
 						</b:panel>
@@ -103,10 +100,7 @@
 							</b:row>
 							<b:row id="unassigned-task-link-row">
 								<b:column col-md="4" rendered="#{userTaskListController.claimed}">
-									<p:commandLink id="execute_unassigned_task_button" value="#{commonProperties['tags.tasks.execute']}"
-										action="#{userTaskListController.goToUnassignedTask}" ajax="false" />
 									<p:link href="#{userTaskListController.goToUnassignedTask()}" value="#{commonProperties['tags.tasks.execute']}" />
-									<h:outputLink value="#{userTaskListController.goToAssignedTask()}">#{commonProperties['tags.tasks.execute']}</h:outputLink>
 								</b:column>
 							</b:row>
 						</b:panel>
